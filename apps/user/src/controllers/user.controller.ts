@@ -1,6 +1,6 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { JwtGuard } from 'libs';
+import { CreateUserDto, JwtGuard } from 'libs';
 
 @Controller('user')
 export class UserController {
@@ -18,5 +18,11 @@ export class UserController {
   async deleteAccount(@Req() req) {
     const userId = await req.user.id;
     return this.userService.deleteAccount(userId);
+  }
+  @Put('/updateprofile')
+  @UseGuards(JwtGuard)
+  async updateProfile(@Req() req, @Body() data: CreateUserDto) {
+    const userId = await req.user.id;
+    return this.userService.updateProfile(userId, data);
   }
 }

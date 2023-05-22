@@ -51,7 +51,7 @@ export class UserRepository {
   }
 
   ///////////////////////////////////////////GET USERS BY EMAIL///////////////////////////////////////////////
-  async updateById(id: number, data: UpdateUserDto) {
+  async updateById(id: number, data: CreateUserDto) {
     return this.prisma.users.update({ where: { id: id }, data: { ...data } });
   }
 

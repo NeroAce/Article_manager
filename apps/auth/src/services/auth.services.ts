@@ -51,10 +51,11 @@ export class AuthService {
         } else {
           throw new InternalServerErrorException('unable to create customer');
         }
-      } else {
       }
     }
+    throw new BadRequestException('user Already exists with this email id');
   }
+
   async logIn(data: LoginDto) {
     const findUser = await this.userRepository.getUserByEmail(data.username);
     if (findUser) {

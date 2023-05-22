@@ -1,12 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { CustomerService } from '../services/customer.service';
+import { JwtGuard } from 'libs';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
 
-  @Get('/getprofile/:id')
-  async getCustomerProfile(@Param('id') id) {
-    return await this.customerService.getCustomer(id);
+  @Get('/getprofile')
+  @UseGuards(JwtGuard)
+  async getCustomerProfile(@Req() req) {
+    const userId = await req.user.id;
+    return await this.customerService.getCustomer(userId);
   }
 }

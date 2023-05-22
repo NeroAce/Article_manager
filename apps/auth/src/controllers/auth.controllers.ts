@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AuthService } from '../services/auth.services';
 import { CreateCustomerDto, CreateUserDto } from 'libs';
 import { LoginDto } from '../models/login.dto';
@@ -32,5 +32,10 @@ export class AuthController {
   @Post('/changePassword')
   async changePassword(@Body() data: ChangePasswordDto) {
     return await this.authService.changePassword(data);
+  }
+
+  @Get('/refreshtoken/:id')
+  async refreshToken(@Param('id') id) {
+    return this.authService.refreshToken(id);
   }
 }

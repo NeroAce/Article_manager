@@ -166,6 +166,22 @@ export class AuthService {
     }
   }
 
+  async refreshToken(id) {
+    try {
+      const newId = parseInt(id);
+      const find = await this.userRepository.getUserById(newId);
+      const token = await this.jwtToken(find.id);
+      return {
+        code: '200',
+        message: '',
+        status: 'success',
+        data: { refresh_token: token.access_token },
+      };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
   ///////////////////////////////////////////////HELPER FUNCTION///////////////////////////////////////////
 
   async comparePasswords(

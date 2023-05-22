@@ -10,7 +10,6 @@ import {
 import * as fs from 'fs';
 import * as morgan from 'morgan';
 import { HttpExceptionFilter } from 'libs';
-import { hostname } from 'os';
 
 //for Morgan
 const logStream = fs.createWriteStream('api.log', {

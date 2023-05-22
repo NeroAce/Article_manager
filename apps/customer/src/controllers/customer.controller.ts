@@ -18,4 +18,10 @@ export class CustomerController {
     const userId = await req.user.id;
     return await this.customerService.getUser(userId);
   }
+  @Get('/deleteaccount')
+  @UseGuards(JwtGuard)
+  async deleteAccount(@Req() req) {
+    const userId = await req.user.id;
+    return await this.customerService.deleteCustomer(userId);
+  }
 }

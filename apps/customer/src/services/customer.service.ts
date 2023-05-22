@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -47,6 +48,19 @@ export class CustomerService {
       }
     } else {
       throw new NotFoundException('user not found for this id');
+    }
+  }
+  async deleteCustomer(id) {
+    const deleted = await this.customer.deleteById(id);
+    if (deleted) {
+      return {
+        code: '200',
+        message: '',
+        status: 'success',
+        data: deleted,
+      };
+    } else {
+      throw new BadRequestException('Can not delete for this id');
     }
   }
 }

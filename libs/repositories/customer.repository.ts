@@ -17,4 +17,8 @@ export class CustomerRepository {
   async findById(id: number) {
     return await this.prisma.customers.findFirst({ where: { id: id } });
   }
+
+  async deleteById(id: number) {
+    return await this.prisma.customers.delete({ where: { id: id } });
+  }
 }

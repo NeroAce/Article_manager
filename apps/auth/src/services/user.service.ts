@@ -3,13 +3,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateUserDto, UserRepository } from 'libs';
+import { CreateUserDto, UpdateUserDto, UserRepository } from 'libs';
 
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  async updateUser(id, data: UpdateUserDto) {
+  async updateUser(id, data: CreateUserDto) {
     try {
       const newId = parseInt(id);
       return await this.userRepository.updateById(id, data);

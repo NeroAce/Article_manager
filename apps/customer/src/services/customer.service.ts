@@ -3,11 +3,14 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CustomerRepository } from 'libs';
+import { CustomerRepository, UserRepository } from 'libs';
 
 @Injectable()
 export class CustomerService {
-  constructor(private customer: CustomerRepository) {}
+  constructor(
+    private customer: CustomerRepository,
+    private user: UserRepository,
+  ) {}
 
   async getCustomer(id) {
     try {
@@ -25,6 +28,25 @@ export class CustomerService {
       }
     } catch (e) {
       throw new InternalServerErrorException(e);
+    }
+  }
+  async getUser(id) {
+    const data = await this.getCustomer(id);
+    if (data) {
+      const userId = data.data.userid;
+      const userData = await this.user.getUserById(userId);
+      if (userData) {
+        return {
+          code: '200',
+          message: '',
+          status: 'success',
+          data: userData,
+        };
+      } else {
+        throw new NotFoundException('user not found');
+      }
+    } else {
+      throw new NotFoundException('user not found for this id');
     }
   }
 }

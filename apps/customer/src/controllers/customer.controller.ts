@@ -8,8 +8,14 @@ export class CustomerController {
 
   @Get('/getprofile')
   @UseGuards(JwtGuard)
-  async getCustomerProfile(@Req() req) {
+  async getProfile(@Req() req) {
     const userId = await req.user.id;
     return await this.customerService.getCustomer(userId);
+  }
+  @Get('/getuser')
+  @UseGuards(JwtGuard)
+  async getUser(@Req() req) {
+    const userId = await req.user.id;
+    return await this.customerService.getUser(userId);
   }
 }

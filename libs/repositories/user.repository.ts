@@ -18,9 +18,9 @@ export class UserRepository {
     });
 
     if (!findUser) {
-      const token = await this.hashPassword(data.password);
+      const token = await this.hashPassword(data.passwordhash);
       if (token) {
-        data.password = token;
+        data.passwordhash = token;
         return await this.prisma.users.create({
           data,
           select: { id: true, username: true },

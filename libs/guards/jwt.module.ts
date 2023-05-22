@@ -7,7 +7,7 @@ import { JWT_CONSTANT } from 'libs/constants/constants';
     JwtModule.register({
       global: true,
       secret: JWT_CONSTANT,
-      signOptions: { expiresIn: '7d' },
+      // signOptions: { expiresIn: '7d' },
     }),
   ],
   providers: [],

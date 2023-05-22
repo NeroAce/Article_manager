@@ -1,5 +1,11 @@
 import { Module } from '@nestjs/common';
-import { JWTModule, OtpRepository, PrismaService, UserRepository } from 'libs';
+import {
+  CustomerRepository,
+  JWTModule,
+  OtpRepository,
+  PrismaService,
+  UserRepository,
+} from 'libs';
 import { AuthController } from './controllers/auth.controllers';
 import { AuthService } from './services/auth.services';
 import { MailerRepository } from 'libs/repositories/mail.repository';
@@ -16,6 +22,7 @@ import { UserController } from './controllers/user.controller';
     AuthService,
     OtpRepository,
     UserService,
+    CustomerRepository,
   ],
 })
 export class AuthModule {}

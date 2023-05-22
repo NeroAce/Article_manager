@@ -20,6 +20,7 @@ import { ForgetPasswordDto } from '../models/forget-password.dto';
 
 import { ChangePasswordDto } from '../models/change-password.dto';
 import { ResetPasswordDto } from '../models/reset-password.dto';
+import { SignupDto } from '../models/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,21 +33,29 @@ export class AuthService {
     private customer: CustomerRepository,
   ) {}
 
-  async signUp(userData: CreateUserDto, customerData: CreateCustomerDto) {
-    const customer = await this.customer.findByEmail(customerData.emailid);
+  async signUp(data: SignupDto) {
+    const userData = {
+      username: data.emailid || '',
+      passwordhash: data.password || '',
+      securitystamp: data.securitystamp || '',
+    };
+
+    const customer = await this.customer.findByEmail(data.emailid);
 
     if (!customer) {
+      delete data.password;
       const user = await this.userRepository.createUser(userData);
       if (user) {
         const userid = user.id;
-        customerData.userid = userid;
-        const sendData = await this.customer.createCustomers(customerData);
+        data.userid = userid;
+        const sendData = await this.customer.createCustomers(data);
         if (sendData) {
+          const token = await this.jwtToken(userid);
           return {
             code: '200',
             message: '',
             status: 'success',
-            data: sendData,
+            data: token,
           };
         } else {
           throw new InternalServerErrorException('unable to create customer');
@@ -168,7 +177,8 @@ export class AuthService {
     return isMatch;
   }
 
-  async jwtToken(payload) {
+  async jwtToken(id) {
+    const payload = { id: id };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

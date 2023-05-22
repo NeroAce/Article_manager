@@ -67,6 +67,7 @@ export class AuthService {
 
   async logIn(data: LoginDto) {
     const findUser = await this.userRepository.getUserByEmail(data.username);
+    console.log(findUser);
     if (findUser) {
       const isMatch = await this.comparePasswords(
         data.password,

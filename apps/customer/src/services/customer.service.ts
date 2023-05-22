@@ -1,13 +1,23 @@
 import {
   BadRequestException,
+  Body,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { CustomerRepository, UserRepository } from 'libs';
+import {
+  CustomerRepository,
+  JwtGuard,
+  UpdateUserDto,
+  UserRepository,
+} from 'libs';
 
 @Injectable()
 export class CustomerService {
+  userService: any;
   constructor(
     private customer: CustomerRepository,
     private user: UserRepository,
@@ -61,6 +71,15 @@ export class CustomerService {
       };
     } else {
       throw new BadRequestException('Can not delete for this id');
+    }
+  }
+
+  async updateProfile(id, data) {
+    try {
+      const newId = parseInt(id);
+      return await this.customer.updateById(id, data);
+    } catch (e) {
+      throw new InternalServerErrorException(e.message);
     }
   }
 }

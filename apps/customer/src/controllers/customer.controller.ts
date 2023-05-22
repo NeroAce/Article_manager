@@ -1,9 +1,18 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CustomerService } from '../services/customer.service';
 import { JwtGuard } from 'libs';
 
 @Controller('customer')
 export class CustomerController {
+  userService: any;
   constructor(private customerService: CustomerService) {}
 
   @Get('/getprofile')
@@ -23,5 +32,11 @@ export class CustomerController {
   async deleteAccount(@Req() req) {
     const userId = await req.user.id;
     return await this.customerService.deleteCustomer(userId);
+  }
+  @Put('/updateprofile')
+  @UseGuards(JwtGuard)
+  async updateProfile(@Req() req, @Body() data) {
+    const userId = await req.user.id;
+    return this.customerService.updateProfile(userId, data);
   }
 }

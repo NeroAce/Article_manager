@@ -77,7 +77,13 @@ export class CustomerService {
   async updateProfile(id, data) {
     try {
       const newId = parseInt(id);
-      return await this.customer.updateById(id, data);
+      const sendData = await this.customer.updateById(id, data);
+      return {
+        code: '200',
+        message: '',
+        status: 'success',
+        data: sendData,
+      };
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }

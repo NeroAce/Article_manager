@@ -46,6 +46,10 @@ export class UserRepository {
     });
   }
 
+  async deleteUserById(id: number) {
+    return await this.prisma.users.delete({ where: { id: id } });
+  }
+
   ///////////////////////////////////////////GET USERS BY EMAIL///////////////////////////////////////////////
   async updateById(id: number, data: UpdateUserDto) {
     return this.prisma.users.update({ where: { id: id }, data: { ...data } });

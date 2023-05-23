@@ -8,7 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { JwtGuard, UpdateUserDto } from 'libs';
+import {
+  CreateCategoryDto,
+  CreateUserDto,
+  JwtGuard,
+  UpdateUserDto,
+} from 'libs';
 
 @Controller('user')
 export class UserController {
@@ -16,7 +21,7 @@ export class UserController {
 
   @Put('/profile/update')
   @UseGuards(JwtGuard)
-  async updateProfile(@Req() req, @Body() data: UpdateUserDto) {
+  async updateProfile(@Req() req, @Body() data: CreateUserDto) {
     const userId = await req.user.id;
     console.log(userId);
     return this.userService.updateUser(userId, data);

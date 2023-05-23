@@ -63,4 +63,7 @@ export class SignupDto {
   @IsOptional()
   @IsNumber()
   userid: number;
+
+  @IsString()
+  role: string;
 }

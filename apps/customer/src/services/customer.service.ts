@@ -14,6 +14,7 @@ import {
   UpdateUserDto,
   UserRepository,
 } from 'libs';
+import { RoleRepository } from 'libs/repositories/role.repository';
 
 @Injectable()
 export class CustomerService {
@@ -21,13 +22,17 @@ export class CustomerService {
   constructor(
     private customer: CustomerRepository,
     private user: UserRepository,
+    private role: RoleRepository,
   ) {}
 
   async getCustomer(id) {
     try {
       const newid = parseInt(id);
       const sendData = await this.customer.findById(newid);
+
       if (sendData) {
+        const getrole = await this.role.getUserRole(sendData.id);
+        sendData['role'] = getrole ? getrole : '';
         return {
           code: '200',
           message: '',

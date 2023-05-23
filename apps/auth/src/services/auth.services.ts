@@ -21,6 +21,7 @@ import { ForgetPasswordDto } from '../models/forget-password.dto';
 import { ChangePasswordDto } from '../models/change-password.dto';
 import { ResetPasswordDto } from '../models/reset-password.dto';
 import { SignupDto } from '../models/signup.dto';
+import { RoleRepository } from 'libs/repositories/role.repository';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +32,7 @@ export class AuthService {
     private mail: MailerRepository,
     private otp: OtpRepository,
     private customer: CustomerRepository,
+    private role: RoleRepository,
   ) {}
 
   async signUp(data: SignupDto) {
@@ -44,22 +46,30 @@ export class AuthService {
 
     if (!customer) {
       delete data.password;
-      const user = await this.userRepository.createUser(userData);
-      if (user) {
-        const userid = user.id;
-        data.userid = userid;
-        const sendData = await this.customer.createCustomers(data);
-        if (sendData) {
-          const token = await this.jwtToken(userid);
-          return {
-            code: '200',
-            message: '',
-            status: 'success',
-            data: token,
-          };
-        } else {
-          throw new InternalServerErrorException('unable to create customer');
+      const role = await this.role.getByName(data.role);
+      if (role) {
+        const user = await this.userRepository.createUser(userData);
+        if (user) {
+          const userid = user.id;
+          data.userid = userid;
+          const userRole = await this.role.createUserRole(role.id, user.id);
+          delete data.role;
+          const sendData = await this.customer.createCustomers(data);
+          if (sendData) {
+            const token = await this.jwtToken(userid);
+            console.log(userRole);
+            return {
+              code: '200',
+              message: '',
+              status: 'success',
+              data: token,
+            };
+          } else {
+            throw new InternalServerErrorException('unable to create customer');
+          }
         }
+      } else {
+        throw new NotFoundException('Role is not valid');
       }
     }
     throw new BadRequestException('user Already exists with this email id');
@@ -120,11 +130,14 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordDto) {
     const find = await this.otp.getOneOtp(data.otp);
-    const user = await this.userRepository.getUserById(find.id);
+    const user = find
+      ? await this.userRepository.getUserById(find.userId)
+      : null;
+    console.log(find);
+    const currentDateTime = new Date();
 
-    if (data.email == user.username) {
-      if (find) {
-        const currentDateTime = new Date();
+    if (find) {
+      if (user && data.email == user.username) {
         if (currentDateTime < find.expireDate) {
           return {
             code: '200',
@@ -136,10 +149,10 @@ export class AuthService {
           throw new BadRequestException('otp expired');
         }
       } else {
-        throw new BadRequestException('Invalid OTP');
+        throw new BadRequestException('OTP does not match with this user');
       }
     } else {
-      throw new BadRequestException('OTP does not match with this user');
+      throw new BadRequestException('Invalid OTP');
     }
   }
 

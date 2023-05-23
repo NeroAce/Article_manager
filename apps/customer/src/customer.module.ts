@@ -7,6 +7,7 @@ import {
   UserRepository,
 } from 'libs';
 import { CustomerService } from './services/customer.service';
+import { RoleRepository } from 'libs/repositories/role.repository';
 
 @Module({
   imports: [JWTModule],
@@ -16,6 +17,7 @@ import { CustomerService } from './services/customer.service';
     CustomerService,
     PrismaService,
     UserRepository,
+    RoleRepository,
   ],
 })
 export class CustomerModule {}

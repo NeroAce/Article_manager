@@ -22,6 +22,9 @@ export class CustomerRepository {
     return await this.prisma.customers.delete({ where: { id: id } });
   }
   async updateById(id: number, data) {
-    return this.prisma.users.update({ where: { id: id }, data: { ...data } });
+    return this.prisma.customers.update({
+      where: { id: id },
+      data: { ...data },
+    });
   }
 }

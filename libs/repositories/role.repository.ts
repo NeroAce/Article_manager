@@ -24,7 +24,7 @@ export class RoleRepository {
   async getUserRole(userid: number) {
     return await this.prisma.userroles.findMany({
       where: { userid: userid },
-      select: { roles: true },
+      select: { roles: { select: { name: true } } },
     });
   }
 }
